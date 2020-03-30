@@ -6,3 +6,15 @@ base_util
 sftp-config.json
 test.py
 example
+ignore*.py
+deep-painterly-harm/experiment.py
+deep-painterly-harm
+sissi
+alpha-zero/alpha_go_zero_cheat_sheet.png
+*/.DS_Store
+.DS_Store
+.vscode
+information-extraction/data/*.json
+coreference/data
+pointer-network/data/corpus
+__pycache__

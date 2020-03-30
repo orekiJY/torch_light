@@ -1,6 +1,7 @@
 ## Introduction
 Natural Language Generation for Chinese Poetry
 
+
 ## Requirement
 * python 3.5
 * pytorch 0.2.0

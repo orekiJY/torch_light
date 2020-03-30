@@ -4,14 +4,27 @@ import logging
 import argparse
 import os
 import copy
+import re
 
 from const import *
+
+
+def normalizeString(s):
+    s = s.lower().strip()
+    try:
+        float(s)
+        return "@"
+    except:
+        return s
+
 
 def word2idx(sents, word2idx):
     return [[word2idx[w] if w in word2idx else UNK for w in s] for s in sents]
 
+
 def char2idx(sents, char2idx):
     return [[[char2idx[c] if c in char2idx else UNK for c in word] for word in sent] for sent in sents]
+
 
 class Dictionary(object):
     def __init__(self, word2idx={}, idx_num=0):
@@ -32,6 +45,7 @@ class Dictionary(object):
     def __str__(self):
         return "%s(size = %d)".format(self.__class__.__name__, len(self.idx))
 
+
 class Words(Dictionary):
     def __init__(self):
         word2idx = {
@@ -45,6 +59,7 @@ class Words(Dictionary):
         for word in words:
             self._add(word)
 
+
 class Chars(Dictionary):
     def __init__(self):
         word2idx = {
@@ -57,6 +72,7 @@ class Chars(Dictionary):
         chars = set([char for sent in sents for word in sent for char in word])
         for char in chars:
             self._add(char)
+
 
 class Labels(Dictionary):
     def __init__(self):
@@ -72,9 +88,10 @@ class Labels(Dictionary):
         for label in _labels:
             self._add(label)
 
+
 class Corpus(object):
     def __init__(self, path, save_data,
-        word_max_len=32, char_max_len=8, label_tag=3):
+                 word_max_len=32, char_max_len=8, label_tag=3):
 
         self.train = os.path.join(path, "train")
         self.valid = os.path.join(path, "testa")
@@ -93,7 +110,8 @@ class Corpus(object):
         _words, _labels = [], []
         for sentence in open(_file):
             if sentence == '\n':
-                if len(_words) == 0: continue
+                if len(_words) == 0:
+                    continue
                 sents.append(_words.copy())
                 labels.append(_labels.copy())
                 _words, _labels = [], []
@@ -101,9 +119,10 @@ class Corpus(object):
             temp = sentence.strip().split(' ')
 
             label, word = temp[self._label_tag].strip(), temp[0].strip()
-            if word == self.coutinue_tag: continue
+            if word == self.coutinue_tag:
+                continue
 
-            _words += [word]
+            _words += [normalizeString(word)]
             _labels += [label]
 
         out_of_range_sents = out_of_range_words = 0
@@ -121,7 +140,8 @@ class Corpus(object):
                     out_of_range_words += 1
                     dc_sents[index][w_index] = word[:self.char_max_len]
 
-            dc_sents[index] = [[char for char in word] for word in dc_sents[index]]
+            dc_sents[index] = [[char for char in word]
+                               for word in dc_sents[index]]
 
         if is_train:
             self.w(sents)
@@ -170,8 +190,9 @@ class Corpus(object):
         print('chars length - [{}]'.format(len(self.c)))
         print('labels - [{}]'.format(self.l.word2idx))
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='CNN Classification')
+    parser = argparse.ArgumentParser()
     parser.add_argument('--file-path', type=str, default="./data",
                         help='file path')
     parser.add_argument('--save-data', type=str, default="corpus.pt",
@@ -181,5 +202,6 @@ if __name__ == "__main__":
     parser.add_argument('--char-max-lenth', type=int, default=10,
                         help='max length left of word')
     args = parser.parse_args()
-    corpus = Corpus(args.file_path, args.save_data, args.word_max_lenth, args.char_max_lenth)
+    corpus = Corpus(args.file_path, args.save_data,
+                    args.word_max_lenth, args.char_max_lenth)
     corpus.save()

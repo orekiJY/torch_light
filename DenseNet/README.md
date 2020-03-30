@@ -3,6 +3,7 @@ Module implemention from DenseNet-BC architecture as described in the paper [Den
 
 <p align="center"><img width="100%" src="img/header.png" /></p>
 
+
 ## Datasets
 Training and evaluation with CIFAR-100
 

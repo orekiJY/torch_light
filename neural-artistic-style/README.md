@@ -1,6 +1,7 @@
 ## Introduction
-Neural Artistic Style. 
+Neural Artistic Style.
 Module implemention from "[A Neural Algorithm of Artistic Style](https://arxiv.org/abs/1508.06576)". <br>
+
 
 ## Requirement
 * python 3.5
